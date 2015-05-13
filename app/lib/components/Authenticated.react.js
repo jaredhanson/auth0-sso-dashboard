@@ -5,7 +5,7 @@ var Auth = require('../Auth');
 
 function getStateFromStores() {
   return {
-    token: Auth.getIdToken(),
+    token: Auth.getAccessToken(),
     token_info: Auth.getTokenInfo()
   };
 }
