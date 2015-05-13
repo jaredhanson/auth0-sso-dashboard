@@ -7,7 +7,12 @@ var CHANGE_EVENT = 'CHANGE';
 var Auth = {
 
   emitter: new EventEmitter(),
-  lock: new Auth0Lock(__AUTH0_CLIENT_ID__, __AUTH0_DOMAIN__),
+  // FIXME: Make it easy to use SSO dashboard with an on-prem or VM deployment
+  //lock: new Auth0Lock(__AUTH0_CLIENT_ID__, __AUTH0_DOMAIN__),
+  lock: new Auth0Lock('RLMRJoNVmsoAzn133XceS9azW9KyE1Eb', 'login0.myauth0.com', {
+        assetsUrl:  'https://sdk.myauth0.com/',
+        cdn:        'https://sdk.myauth0.com/'
+      }),
 
   logout: function() {
     this.clearSession();
@@ -18,6 +23,7 @@ var Auth = {
 
   clearSession: function() {
     store.remove('id_token');
+    store.remove('access_token');
     this.emitChange();
   },
 
@@ -28,23 +34,24 @@ var Auth = {
       },
       closable: false,
       connections: [__AUTH0_CONNECTION__]
-    }, (function(err, token_info, token) {
+    }, (function(err, profile, idToken, accessToken) {
       if (err) {
         // Error callback
         console.log(err);
         throw err;
       } else {
-        this.authenticate(token, token_info);
+        this.authenticate(idToken, profile, accessToken);
         callback();
       }
     }).bind(this));
   },
 
-  authenticate: function(id_token, token_info) {
+  authenticate: function(id_token, profile, accessToken) {
     this.setIdToken(id_token);
+    this.setAccessToken(accessToken);
     Dispatcher.dispatch({
       actionType: Constants.RECEIVED_TOKEN_INFO,
-      token_info: token_info
+      token_info: profile
     });
     Dispatcher.dispatch({
       actionType: Constants.USER_AUTHENTICATED,
@@ -59,8 +66,8 @@ var Auth = {
     }
   },
 
-  setTokenInfo: function(token_info) {
-    this.token_info = token_info;
+  setTokenInfo: function(profile) {
+    this.token_info = profile;
     this.emitChange();
   },
 
@@ -75,6 +82,15 @@ var Auth = {
 
   getIdToken: function() {
     return store.get('id_token');
+  },
+  
+  setAccessToken: function(token) {
+    store.set('access_token', token);
+    this.emitChange();
+  },
+
+  getAccessToken: function() {
+    return store.get('access_token');
   },
 
   isAuthenticated: function() {
