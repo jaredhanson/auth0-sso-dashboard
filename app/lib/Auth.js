@@ -40,14 +40,14 @@ var Auth = {
         console.log(err);
         throw err;
       } else {
-        this.authenticate(idToken, profile, accessToken);
+        this.authenticate(profile, idToken, accessToken);
         callback();
       }
     }).bind(this));
   },
 
-  authenticate: function(id_token, profile, accessToken) {
-    this.setIdToken(id_token);
+  authenticate: function(profile, idToken, accessToken) {
+    this.setIdToken(idToken);
     this.setAccessToken(accessToken);
     Dispatcher.dispatch({
       actionType: Constants.RECEIVED_TOKEN_INFO,
@@ -55,7 +55,7 @@ var Auth = {
     });
     Dispatcher.dispatch({
       actionType: Constants.USER_AUTHENTICATED,
-      id_token: id_token
+      id_token: idToken
     });
   },
 
