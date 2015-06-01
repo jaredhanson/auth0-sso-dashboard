@@ -9,7 +9,8 @@ var Auth = {
   emitter: new EventEmitter(),
   // FIXME: Make it easy to use SSO dashboard with an on-prem or VM deployment
   //lock: new Auth0Lock(__AUTH0_CLIENT_ID__, __AUTH0_DOMAIN__),
-  lock: new Auth0Lock('RLMRJoNVmsoAzn133XceS9azW9KyE1Eb', 'login0.myauth0.com', {
+  //lock: new Auth0Lock('RLMRJoNVmsoAzn133XceS9azW9KyE1Eb', 'login0.myauth0.com', {
+  lock: new Auth0Lock('cli_KaMrHxxLUPFKY4lpdVqBdBzk76Lat1zN', 'login0.myauth0.com', {
         assetsUrl:  'https://sdk.myauth0.com/',
         cdn:        'https://sdk.myauth0.com/'
       }),
